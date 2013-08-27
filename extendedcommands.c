@@ -164,7 +164,7 @@ void show_install_update_menu()
                 break;
             }
             case ITEM_CHOOSE_ZIP:
-                show_choose_zip_menu("/sdcard/0/");
+                show_choose_zip_menu("/sdcard/");
                 write_recovery_version();
                 break;
             case ITEM_APPLY_SIDELOAD:
@@ -1376,7 +1376,7 @@ void show_advanced_menu()
                     reboot_main_system(ANDROID_RB_RESTART2, 0, "download");
                 } else {
                     ui_print("Rebooting to bootloader...\n");
-                    reboot_main_system(ANDROID_RB_RESTART2, 0, "bootloader");
+                    reboot_main_system(ANDROID_RB_RESTART2, 0, "download");
                 }
                 break;
             }
