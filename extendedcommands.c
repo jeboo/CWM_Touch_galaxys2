@@ -1653,3 +1653,107 @@ int verify_root_and_recovery() {
     ensure_path_unmounted("/system");
     return ret;
 }
+
+void show_mdnie_menu()
+{
+    char tmp[PATH_MAX], fname[PATH_MAX];
+    int  i;
+    static char* headers[] = {  "MDNIE Sharpness Fix",
+                                "",
+                                NULL
+    };
+
+    static char* list[] = { "ENABLE MDNIE Sharpness Fix",
+                    "DISABLE MDNIE Sharpness Fix",
+                    NULL
+    };
+
+    for (;;) 
+    {
+        //header function so that "Toggle menu" doesn't reset to main menu on action selected
+        int chosen_item = get_filtered_menu_selection(headers, list, 0, 0, sizeof(list) / sizeof(char*));
+        if (chosen_item == GO_BACK)
+            break;
+	
+	if (0 != ensure_path_mounted("/data"))
+            break;
+
+        switch (chosen_item)
+        {
+	    case 0:
+	    case 1:
+	    	sprintf(tmp, "mkdir /data/.jeboo;rm -f /data/.jeboo/mdnie_tweak; echo \"%u\" > /data/.jeboo/mdnie_tweak", (~chosen_item)+2);
+	    	__system(tmp);
+		break;
+        }
+
+	ensure_path_unmounted("/data");
+
+	ui_print("MDNIE Sharpness Fix %s.\n", chosen_item ? "DISABLED" : "ENABLED");
+    }
+}
+
+void show_jeboo_tweaks()
+{
+    static char* headers[] = {  "Jeboo Kernel Tweaks",
+                                NULL
+    };
+
+    static char* list[] = { "MDNIE Sharpness Fix",
+			    "Clear init.d Voltage Script",
+                             NULL
+    };
+
+    for (;;) {
+        //header function so that "Toggle menu" doesn't reset to main menu on action selected
+        int chosen_item = get_filtered_menu_selection(headers, list, 0, 0, sizeof(list) / sizeof(char*));
+        if (chosen_item == GO_BACK)
+            break;
+        switch (chosen_item)
+        {
+            case 0:
+                show_mdnie_menu();
+		break;
+	    case 1:
+		show_vctrl_menu();
+		break;
+        }
+    }
+}
+
+void show_vctrl_menu()
+{
+    char tmp[PATH_MAX], fname[PATH_MAX];
+    int  i;
+    static char* headers[] = {  "Clear init.d Voltage Script",
+                                "",
+                                NULL
+    };
+
+    static char* list[] = { "Delete /etc/init.d/S91voltctrl voltage script",
+	                    NULL
+    };
+
+    for (;;) 
+    {
+        //header function so that "Toggle menu" doesn't reset to main menu on action selected
+        int chosen_item = get_filtered_menu_selection(headers, list, 0, 0, sizeof(list) / sizeof(char*));
+        if (chosen_item == GO_BACK)
+            break;
+	
+	if (0 != ensure_path_mounted("/system"))
+            break;
+
+        switch (chosen_item)
+        {
+	    case 0:
+	    	sprintf(tmp, "rm -f /system/etc/init.d/S91voltctrl");
+	    	__system(tmp);
+		break;
+        }
+
+	ensure_path_unmounted("/system");
+
+	ui_print("Removed /etc/init.d/S91voltctrl\n");
+    }
+}
